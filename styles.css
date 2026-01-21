@@ -1,0 +1,73 @@
+.skb-selectsearch-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  max-width: 100%;
+}
+
+.skb-selectsearch-input {
+  width: 100%;
+  padding: 0.45rem 0.75rem;
+  border: 1px solid #c7c7c7;
+  border-radius: 0.25rem;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  background-color: #fff;
+}
+
+.skb-selectsearch-input:focus {
+  outline: none;
+  border-color: #6c63ff;
+  box-shadow: 0 0 0 2px rgba(108, 99, 255, 0.2);
+}
+
+.skb-selectsearch-list {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  max-height: 260px;
+  overflow-y: auto;
+  background: #fff;
+  border: 1px solid #d9d9d9;
+  border-radius: 0.25rem;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+  padding: 0.25rem 0;
+  display: none;
+  z-index: 9999;
+}
+
+.skb-selectsearch-list.is-open {
+  display: block;
+}
+
+.skb-selectsearch-group {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.35rem 0.75rem;
+  color: #5f5f5f;
+  text-transform: uppercase;
+}
+
+.skb-selectsearch-item {
+  display: block;
+  width: 100%;
+  border: none;
+  background: transparent;
+  text-align: left;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.skb-selectsearch-item:hover,
+.skb-selectsearch-item:focus {
+  background: #f1f3ff;
+  outline: none;
+}
+
+.skb-selectsearch-empty {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.85rem;
+  color: #8a8a8a;
+}
