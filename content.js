@@ -50,8 +50,27 @@
   };
 
   const updateSelectValue = (select, value) => {
+    // Find and mark the correct option as selected
+    Array.from(select.options).forEach((option) => {
+      option.selected = option.value === value;
+    });
+
+    // Set the value on the select element
     select.value = value;
-    select.dispatchEvent(new Event("change", { bubbles: true }));
+
+    // Dispatch multiple events to ensure compatibility with Vue.js, Bootstrap-Vue, and native forms
+    // 1. input event - required for Vue.js v-model and modern frameworks
+    select.dispatchEvent(new Event("input", { bubbles: true, composed: true }));
+
+    // 2. change event - required for native form handling
+    select.dispatchEvent(new Event("change", { bubbles: true, composed: true }));
+
+    // 3. For Vue.js: manually trigger the setter if __vue__ is present
+    if (select.__vue__ || select._value !== undefined) {
+      // Trigger Vue's internal update mechanism
+      const event = new Event("input", { bubbles: true });
+      select.dispatchEvent(event);
+    }
   };
 
   const buildOptionList = (options, query) => {
@@ -160,12 +179,32 @@
     // Install the global click handler (only once)
     installGlobalClickHandler();
 
+    // Function to update input display based on current select value
+    const updateInputFromSelect = () => {
+      const currentOptions = getOptions(select);
+      const selectedOption = currentOptions.find((option) => option.value === select.value);
+      if (selectedOption) {
+        input.value = selectedOption.label || selectedOption.value;
+      }
+    };
+
     // Set initial value if select has a value
-    const initialOptions = getOptions(select);
-    const selectedOption = initialOptions.find((option) => option.value === select.value);
-    if (selectedOption) {
-      input.value = selectedOption.label || selectedOption.value;
-    }
+    updateInputFromSelect();
+
+    // Observe changes to the select element (for dynamically loaded options and value changes)
+    const selectObserver = new MutationObserver(() => {
+      // Update input when options are loaded or select value changes
+      updateInputFromSelect();
+    });
+
+    // Watch for changes to child elements (option elements being added/removed)
+    // and attribute changes (value attribute)
+    selectObserver.observe(select, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['value']
+    });
 
     wrapper.append(input, list);
     select.classList.add(ENHANCED_CLASS);
