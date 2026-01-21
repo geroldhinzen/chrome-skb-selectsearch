@@ -9,13 +9,14 @@
     clickHandlerInstalled = true;
 
     document.addEventListener("click", (event) => {
-      document.querySelectorAll(`.${WRAPPER_CLASS}`).forEach((wrapper) => {
-        if (!wrapper.contains(event.target)) {
-          const list = wrapper.querySelector(".skb-selectsearch-list");
-          if (list) {
-            list.classList.remove("is-open");
-          }
-        }
+      // Ignore clicks inside any wrapper
+      if (event.target.closest(`.${WRAPPER_CLASS}`)) {
+        return;
+      }
+
+      // Close all open dropdowns
+      document.querySelectorAll(".skb-selectsearch-list.is-open").forEach((list) => {
+        list.classList.remove("is-open");
       });
     });
   };
