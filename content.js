@@ -2,6 +2,24 @@
   const ENHANCED_CLASS = "skb-selectsearch-enhanced";
   const WRAPPER_CLASS = "skb-selectsearch-wrapper";
 
+  // Single document-level click handler to close all open dropdowns
+  let clickHandlerInstalled = false;
+  const installGlobalClickHandler = () => {
+    if (clickHandlerInstalled) return;
+    clickHandlerInstalled = true;
+
+    document.addEventListener("click", (event) => {
+      document.querySelectorAll(`.${WRAPPER_CLASS}`).forEach((wrapper) => {
+        if (!wrapper.contains(event.target)) {
+          const list = wrapper.querySelector(".skb-selectsearch-list");
+          if (list) {
+            list.classList.remove("is-open");
+          }
+        }
+      });
+    });
+  };
+
   const normalizeText = (text) => text.toLowerCase().trim();
 
   const getOptions = (select) => {
@@ -135,11 +153,8 @@
       }
     });
 
-    document.addEventListener("click", (event) => {
-      if (!wrapper.contains(event.target)) {
-        list.classList.remove("is-open");
-      }
-    });
+    // Install the global click handler (only once)
+    installGlobalClickHandler();
 
     const selectedOption = options.find((option) => option.value === select.value);
     if (selectedOption) {
