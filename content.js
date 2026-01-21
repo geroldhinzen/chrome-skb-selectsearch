@@ -179,12 +179,32 @@
     // Install the global click handler (only once)
     installGlobalClickHandler();
 
+    // Function to update input display based on current select value
+    const updateInputFromSelect = () => {
+      const currentOptions = getOptions(select);
+      const selectedOption = currentOptions.find((option) => option.value === select.value);
+      if (selectedOption) {
+        input.value = selectedOption.label || selectedOption.value;
+      }
+    };
+
     // Set initial value if select has a value
-    const initialOptions = getOptions(select);
-    const selectedOption = initialOptions.find((option) => option.value === select.value);
-    if (selectedOption) {
-      input.value = selectedOption.label || selectedOption.value;
-    }
+    updateInputFromSelect();
+
+    // Observe changes to the select element (for dynamically loaded options and value changes)
+    const selectObserver = new MutationObserver(() => {
+      // Update input when options are loaded or select value changes
+      updateInputFromSelect();
+    });
+
+    // Watch for changes to child elements (option elements being added/removed)
+    // and attribute changes (value attribute)
+    selectObserver.observe(select, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['value']
+    });
 
     wrapper.append(input, list);
     select.classList.add(ENHANCED_CLASS);
