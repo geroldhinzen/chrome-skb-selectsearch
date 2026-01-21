@@ -109,7 +109,6 @@
       return;
     }
 
-    const options = getOptions(select);
     const wrapper = document.createElement("div");
     wrapper.className = WRAPPER_CLASS;
 
@@ -129,6 +128,8 @@
     };
 
     const refresh = () => {
+      // Read options dynamically to handle dynamically loaded select options
+      const options = getOptions(select);
       const results = buildOptionList(options, input.value);
       renderResults(list, results, onSelect);
       list.classList.add("is-open");
@@ -146,6 +147,8 @@
         if (firstItem) {
           event.preventDefault();
           const value = firstItem.dataset.value || "";
+          // Read options dynamically to get current state
+          const options = getOptions(select);
           const match = options.find((option) => option.value === value);
           if (match) {
             onSelect(match);
@@ -157,7 +160,9 @@
     // Install the global click handler (only once)
     installGlobalClickHandler();
 
-    const selectedOption = options.find((option) => option.value === select.value);
+    // Set initial value if select has a value
+    const initialOptions = getOptions(select);
+    const selectedOption = initialOptions.find((option) => option.value === select.value);
     if (selectedOption) {
       input.value = selectedOption.label || selectedOption.value;
     }
