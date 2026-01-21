@@ -50,8 +50,27 @@
   };
 
   const updateSelectValue = (select, value) => {
+    // Find and mark the correct option as selected
+    Array.from(select.options).forEach((option) => {
+      option.selected = option.value === value;
+    });
+
+    // Set the value on the select element
     select.value = value;
-    select.dispatchEvent(new Event("change", { bubbles: true }));
+
+    // Dispatch multiple events to ensure compatibility with Vue.js, Bootstrap-Vue, and native forms
+    // 1. input event - required for Vue.js v-model and modern frameworks
+    select.dispatchEvent(new Event("input", { bubbles: true, composed: true }));
+
+    // 2. change event - required for native form handling
+    select.dispatchEvent(new Event("change", { bubbles: true, composed: true }));
+
+    // 3. For Vue.js: manually trigger the setter if __vue__ is present
+    if (select.__vue__ || select._value !== undefined) {
+      // Trigger Vue's internal update mechanism
+      const event = new Event("input", { bubbles: true });
+      select.dispatchEvent(event);
+    }
   };
 
   const buildOptionList = (options, query) => {
