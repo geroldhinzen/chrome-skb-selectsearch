@@ -5,7 +5,7 @@
   "description": "Macht select-Felder auf hiermitherz.de durchsuchbar.",
   "content_scripts": [
     {
-      "matches": ["https://www.hiermitherz.de/*", "https://hiermitherz.de/*"],
+      "matches": ["https://www.hiermitherz.de/*", "https://hiermitherz.de/*", "https://koelnbonn.demo.particulate.de/*"],
       "js": ["content.js"],
       "css": ["styles.css"],
       "run_at": "document_idle"
